@@ -8,9 +8,7 @@ searchInput.addEventListener("keyup", debounce(HandlerInput, 500));
 function HandlerInput() {
   clearDropdownList();
   if (!(searchInput.value.trim() == "")) {
-    searchRepo(searchInput.value).then((data) => {
-      dropDown(data);
-    });
+    searchRepo(searchInput.value);
   }
 }
 
@@ -27,11 +25,26 @@ async function searchRepo(request) {
     );
 
     const data = await repos.json();
+    const items = data.items;
+
+    items.forEach((el) => dropDown(el));
     console.log(data.items);
     return data.items;
   } catch (e) {
     console.error(e);
   }
+}
+
+function dropDown(repo) {
+  const listItem = document.createElement("li");
+  listItem.addEventListener("click", () => {
+    showDetails(repo.name, repo.owner.login, repo.stargazers_count);
+    searchInput.value = "";
+    clearDropdownList();
+  });
+  listItem.className = "dropdown__item";
+  listItem.textContent = `${repo.name}`;
+  dropdownList.append(listItem);
 }
 
 function debounce(fn, debounceTime) {
@@ -42,20 +55,6 @@ function debounce(fn, debounceTime) {
       fn.apply(this, args);
     }, debounceTime);
   };
-}
-
-function dropDown(repos) {
-  repos.forEach((el) => {
-    const listItem = document.createElement("li");
-    listItem.addEventListener("click", () => {
-      showDetails(el.name, el.owner.login, el.stargazers_count);
-      searchInput.value = "";
-      clearDropdownList();
-    });
-    listItem.className = "dropdown__item";
-    listItem.textContent = `${el.name}`;
-    dropdownList.append(listItem);
-  });
 }
 
 function showDetails(repo, owner, stars) {
