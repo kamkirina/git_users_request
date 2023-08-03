@@ -65,7 +65,7 @@ ul {
 
 .btn {
   background-color: #e27beb;
-  background-image: url("/close.svg");
+  background-image: url("./close.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
